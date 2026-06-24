@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scan DOE - Tri Intelligent BPE</title>
+    <!-- Google Fonts for modern typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- External CSS -->
+    <link rel="stylesheet" href="style.css">
+    <!-- JSZip Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <!-- SheetJS (xlsx) Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+
+    <main class="app-container">
+        <header class="app-header">
+            <div class="logo-container">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+                <h1>Scan DOE</h1>
+            </div>
+            <p class="subtitle">Classification automatique et sécurisée de vos documents de chantier</p>
+        </header>
+
+        <section class="workflow">
+            <!-- Etape 1 -->
+            <div class="card step-card" id="step-1">
+                <div class="step-header">
+                    <span class="step-number">1</span>
+                    <h2>Dossier Racine</h2>
+                </div>
+                <div class="step-body">
+                    <p>Sélectionnez le dossier principal de votre DOE sur votre ordinateur.</p>
+                    <button id="btnSelectDir" class="primary-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                        Parcourir les dossiers
+                    </button>
+                    <div id="statusDir" class="status-indicator">En attente de sélection...</div>
+                </div>
+            </div>
+
+            <!-- Etape 2 -->
+            <div class="card step-card disabled" id="step-2">
+                <div class="step-header">
+                    <span class="step-number">2</span>
+                    <h2>Arborescence (Trame)</h2>
+                </div>
+                <div class="step-body">
+                    <p>Importez la trame Word (.docx) pour initialiser les dossiers de classement.</p>
+                    <label for="inputDocx" class="file-label primary-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                        Charger la trame .docx
+                    </label>
+                    <input type="file" id="inputDocx" accept=".docx" disabled>
+                    <div id="statusDocx" class="status-indicator">En attente de l'étape 1...</div>
+                </div>
+            </div>
+
+            <!-- Etape 3 : Export GED -->
+            <div class="card step-card disabled" id="step-3">
+                <div class="step-header">
+                    <span class="step-number">3</span>
+                    <h2>Export GED (Excel)</h2>
+                </div>
+                <div class="step-body">
+                    <p>Importez votre fichier Excel contenant la liste des documents BPE.</p>
+                    <label for="inputExcel" class="file-label primary-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="8" y1="13" x2="16" y2="13"></line><line x1="8" y1="17" x2="16" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                        Charger l'Excel
+                    </label>
+                    <input type="file" id="inputExcel" accept=".xlsx, .xls" disabled>
+                    <div id="statusExcel" class="status-indicator">En attente de l'étape 2...</div>
+                </div>
+            </div>
+
+            <!-- Etape 4 : ZIP -->
+            <div class="card step-card disabled" id="step-4">
+                <div class="step-header">
+                    <span class="step-number">4</span>
+                    <h2>Importation ZIP</h2>
+                </div>
+                <div class="step-body">
+                    <p>Importez votre fichier ZIP. L'intelligence artificielle se charge du tri.</p>
+                    <label for="inputZip" class="file-label primary-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                        Traiter le ZIP
+                    </label>
+                    <input type="file" id="inputZip" accept=".zip" disabled>
+                    <div id="statusZip" class="status-indicator">En attente de l'étape 3...</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Console -->
+        <section class="console-section">
+            <div class="console-header">
+                <h3>Console d'exécution</h3>
+                <button id="btnClearLog" class="icon-btn" title="Effacer la console">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                </button>
+            </div>
+            <div id="logConsole" class="terminal-window">
+                <div class="log-entry log-system">Système initialisé. Prêt à recevoir des commandes.</div>
+            </div>
+        </section>
+    </main>
+
+    <!-- External JS -->
+    <script src="script.js"></script>
+</body>
+</html>
